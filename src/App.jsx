@@ -3,10 +3,7 @@ import { Layout } from "./components/Layout.jsx";
 import { Home } from "./pages/Home.jsx";
 import { About } from "./pages/About.jsx";
 import { Sectors } from "./pages/Sectors.jsx";
-import { SectorStudents } from "./pages/SectorStudents.jsx";
-import { SectorGraduates } from "./pages/SectorGraduates.jsx";
-import { SectorWorkers } from "./pages/SectorWorkers.jsx";
-import { SectorEntrepreneurs } from "./pages/SectorEntrepreneurs.jsx";
+import { SectorPage } from "./pages/SectorPage.jsx";
 import { Events } from "./pages/Events.jsx";
 import { EventDetail } from "./pages/EventDetail.jsx";
 import { Gallery } from "./pages/Gallery.jsx";
@@ -22,10 +19,8 @@ export function App() {
 
         <Route path="sectors">
           <Route index element={<Sectors />} />
-          <Route path="students" element={<SectorStudents />} />
-          <Route path="graduates" element={<SectorGraduates />} />
-          <Route path="workers" element={<SectorWorkers />} />
-          <Route path="entrepreneurs" element={<SectorEntrepreneurs />} />
+          {/* One template for all four sectors, resolved from the slug. */}
+          <Route path=":slug" element={<SectorPage />} />
         </Route>
 
         <Route path="events">

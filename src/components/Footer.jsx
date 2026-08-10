@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import { mainNav, sectorNav } from "../lib/navigation.js";
 import logo from "../assets/logo.jpeg";
 
-// TODO: replace every value below with the client's real details before launch.
+// The label is how the number reads in Ghana; the href has to be a bare E.164
+// string or the handset will not dial it.
 const contactDetails = [
   { label: "Accra, Ghana", href: null },
-  { label: "+233 24 000 0000", href: "tel:+233240000000" },
-  { label: "hello@dormiguideevents.com", href: "mailto:hello@dormiguideevents.com" },
+  { label: "+233 (0) 53 259 2824", href: "tel:+233532592824" },
+  { label: "dormiguideevents@gmail.com", href: "mailto:dormiguideevents@gmail.com" },
 ];
 
 // TODO: swap the placeholder "#" hrefs for the real profiles.

@@ -4,11 +4,10 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Dormi Guide Events — a Ghanaian event-led organisation running events for students, graduates, workers and entrepreneurs."
-    />
-    <title>DG Events — Dormi Guide Events</title>
+    <!-- Title and description are set per route by src/components/PageMeta.jsx.
+         React 19 hoists those into <head> but does not dedupe against tags
+         declared here, so this file deliberately declares neither — two
+         <title> elements is invalid, and every route supplies its own. -->
     <!-- Only the weights actually used: mobile data is a real cost here. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
