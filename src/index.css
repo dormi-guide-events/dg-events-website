@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Brand tokens — sampled from the official logo (see CLAUDE.md).
+
+   These are the only purple, pink and gold shades that are on brand. Tailwind's
+   own defaults for the other steps (purple-300, pink-600, …) still resolve, but
+   they are NOT our colours — don't reach for them.
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-purple-900: #2e0057;
+  --color-purple-700: #400080;
+  --color-purple-500: #5a1a9e;
+
+  --color-pink-500: #e0417f;
+  --color-pink-400: #f060a0;
+  --color-pink-100: #f7e4ee;
+
+  --color-gold-500: #d8a010;
+
+  --color-charcoal: #1c1b1f;
+  --color-grey-500: #6b6b70;
+  --color-off-white: #fbf9fb;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-off-white font-sans text-charcoal antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif;
+  }
+
+  /* Anything driven by CSS is stilled here. Framer Motion is handled in JS with
+     useReducedMotion(), since it does not animate through CSS transitions. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
