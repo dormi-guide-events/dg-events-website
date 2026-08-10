@@ -86,7 +86,25 @@ small accents only, never large fills. White space is part of the design.
 Core pillars across all four: youth participation, entrepreneurship,
 quality education, leadership.
 
-## Event content model (Sanity)
+## Sanity CMS
+
+Standalone Studio in `studio/`, JavaScript to match the frontend.
+
+| | |
+|---|---|
+| Organisation | Dormi Guide Events (`o0B2bOnAx`) |
+| Project | DG Events (`i2k116ix`) |
+| Dataset | `production`, public |
+
+Project ids are public identifiers, not secrets, so `i2k116ix` is committed in
+`studio/env.js`. Run the Studio with `cd studio && npm run dev` (port 3333).
+Redeploy the hosted schema after any schema edit: `npx sanity schema deploy`.
+
+**Icons must be imported from their own subpath** — `@sanity/icons/Calendar`,
+not `@sanity/icons`. v5 removed the root named exports and they now resolve to
+`undefined` silently rather than failing.
+
+### Content models
 
 ```
 event
@@ -94,18 +112,61 @@ event
   slug            slug, from title, required
   sector          reference → sector, required
   startDate       datetime, required
-  endDate         datetime, optional
+  endDate         datetime, optional — validated to fall after startDate
   venue           string
   city            string, default "Accra"
-  coverImage      image with hotspot + alt text
+  coverImage      image with hotspot + alt text (alt required)
   summary         text, ~160 chars, used on cards and meta description
   description     portable text (rich body)
-  contactNote     string — how to attend, e.g. "Call 024 XXX XXXX to reserve a seat"
+  contactNote     string — how to attend, e.g. "Call 053 259 2824 to reserve a seat"
   isFeatured      boolean — pins to homepage
+
+sector
+  title             string, required
+  slug              slug, from title, required
+  remit             string, required — short label, e.g. "Academic & talent
+                    discovery". Shown on event cards and sector page headers.
+  shortDescription  text, required — a sentence or two on who it is for
+  displayOrder      number, required — drives the student → graduate → worker →
+                    entrepreneur progression the whole site is built around
+  eventFormats      array of { name, description }, required, 1–6
+
+teamMember
+  name            string, required
+  role            string, required
+  photo           image with hotspot + alt text (alt required)
+  bio             text — short
+  displayOrder    number — lower first
+
+galleryImage
+  image           image with hotspot + alt text, both required
+  caption         string, optional
+  event           reference → event, optional
+  date            date — sorts the gallery, newest first
+
+siteSettings      singleton, fixed id "siteSettings"
+  contactEmail    string, required, email-validated
+  phone           string, required
+  address         text
+  socialLinks     array of { platform, url }
 ```
 
 Upcoming vs past is derived from `startDate` compared to now. It is never a
 manually-set field — that would rot the moment the client forgets to update it.
+
+`eventFormats` allows 1–6 rather than exactly 3. Every sector runs three today,
+but that describes the current content, not a rule: locking it would stop a
+half-drafted sector saving or a fourth format ever being added.
+
+### Studio conventions
+
+- Field labels are plain English for someone who runs an events organisation,
+  not a CMS — "Web address" not "slug", "Photo description" not "alt text".
+  Validation messages say what to do, not what went wrong.
+- Document list order follows how often an editor touches each type:
+  Events, Gallery, Team, Sectors, then Site settings.
+- Seed the four sectors with `cd studio && npm run seed`. Fixed document ids
+  (`sector-students` and so on) keep it idempotent and referenceable.
 
 ## Conventions
 
