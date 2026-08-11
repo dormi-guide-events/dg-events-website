@@ -186,12 +186,28 @@ half-drafted sector saving or a fourth format ever being added.
   Link hrefs are checked against an allowlist of schemes first — an editor can
   paste `javascript:` into a link field otherwise.
 
-**Social previews are not yet real.** `PageMeta` writes Open Graph and Twitter
-tags at runtime, which is fine for Google but useless for WhatsApp, Facebook
-and X: their scrapers do not execute JavaScript, so they only ever see the
-static `index.html`. Since event links get shared on WhatsApp constantly, this
-needs fixing before launch — prerender the event routes at build time, or add
-a Vercel edge middleware that injects the tags for crawler user-agents.
+### Icons and social previews
+
+Everything in `public/` is generated from `src/assets/logo.jpeg` — favicon.ico
+(16/32/48), `apple-touch-icon.png`, `icon-192`/`icon-512`, a maskable 512 for
+Android, and `og-default.png` at 1200x630. The icons crop to **just the
+circular DG monogram**; the wordmark is illegible below about 64px. If the logo
+is ever replaced, regenerate rather than hand-cropping.
+
+`index.html` carries site-level `<title>`, description and OG/Twitter tags, all
+marked `data-default`. `PageMeta` deletes those on mount and replaces them with
+per-page equivalents, because React 19 only appends — leave the marker off and
+every page ends up with two titles.
+
+`og:image` and `og:url` must be absolute, so `index.html` uses
+`%VITE_SITE_URL%`, substituted by Vite at build time. **Set `VITE_SITE_URL` in
+Vercel** or the production preview will point at whatever the fallback says.
+
+**Per-page previews still are not real.** The static block is the only thing
+WhatsApp, Facebook and X ever see, because their scrapers do not run
+JavaScript — so a shared `/events/some-event` link shows the generic site card
+rather than that event's cover. Fixing it needs prerendering of the event
+routes, or a Vercel edge middleware that injects tags for crawler user-agents.
 
 Config lives in `.env` as `VITE_SANITY_PROJECT_ID`, `VITE_SANITY_DATASET` and
 `VITE_SANITY_API_VERSION`, with `.env.example` committed as the template.

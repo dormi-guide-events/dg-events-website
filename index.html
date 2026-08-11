@@ -1,13 +1,79 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Title and description are set per route by src/components/PageMeta.jsx.
-         React 19 hoists those into <head> but does not dedupe against tags
-         declared here, so this file deliberately declares neither — two
-         <title> elements is invalid, and every route supplies its own. -->
+
+    <!-- Icons, generated from the logo's circular DG monogram. The wordmark is
+         cropped out: it is illegible below about 64px and reads as mud. -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#400080" />
+
+    <!-- Site-level defaults. Every tag below is marked data-default and is
+         removed by src/components/PageMeta.jsx as soon as React mounts, which
+         replaces them with per-page equivalents.
+
+         They exist for the clients that never get that far: WhatsApp, Facebook
+         and X preview scrapers do not run JavaScript, so this static block is
+         the only thing they will ever read. Links shared on WhatsApp are how
+         most people meet this site, so it has to stand on its own.
+
+         %VITE_SITE_URL% is substituted at build time — og:image and og:url
+         must be absolute URLs. -->
+    <title data-default>Events for young Ghanaians — DG Events</title>
+    <meta
+      data-default
+      name="description"
+      content="Dormi Guide Events runs targeted events across Ghana for students, graduates, workers and entrepreneurs — built for where you are now, and where you are going next."
+    />
+
+    <meta data-default property="og:site_name" content="Dormi Guide Events" />
+    <meta data-default property="og:type" content="website" />
+    <meta data-default property="og:locale" content="en_GB" />
+    <meta data-default property="og:url" content="%VITE_SITE_URL%/" />
+    <meta
+      data-default
+      property="og:title"
+      content="Events for young Ghanaians — DG Events"
+    />
+    <meta
+      data-default
+      property="og:description"
+      content="Dormi Guide Events runs targeted events across Ghana for students, graduates, workers and entrepreneurs — built for where you are now, and where you are going next."
+    />
+    <meta
+      data-default
+      property="og:image"
+      content="%VITE_SITE_URL%/og-default.png"
+    />
+    <meta data-default property="og:image:width" content="1200" />
+    <meta data-default property="og:image:height" content="630" />
+    <meta
+      data-default
+      property="og:image:alt"
+      content="The Dormi Guide Events logo"
+    />
+
+    <meta data-default name="twitter:card" content="summary_large_image" />
+    <meta
+      data-default
+      name="twitter:title"
+      content="Events for young Ghanaians — DG Events"
+    />
+    <meta
+      data-default
+      name="twitter:description"
+      content="Dormi Guide Events runs targeted events across Ghana for students, graduates, workers and entrepreneurs — built for where you are now, and where you are going next."
+    />
+    <meta
+      data-default
+      name="twitter:image"
+      content="%VITE_SITE_URL%/og-default.png"
+    />
+
     <!-- Only the weights actually used: mobile data is a real cost here. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
