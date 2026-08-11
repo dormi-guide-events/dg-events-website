@@ -1,5 +1,8 @@
-// Single source of truth for the site's navigation, shared by the header, the
-// mobile menu and the footer so the three can never drift apart.
+// The site's fixed navigation, shared by the header, the mobile menu and the
+// footer so the three can never drift apart.
+//
+// The sector links are deliberately not here — they come from the CMS via
+// useSectors(), so adding or renaming a sector never needs a code change.
 
 export const mainNav = [
   // `end` keeps "/" from matching every route.
@@ -9,11 +12,4 @@ export const mainNav = [
   { label: "Events", to: "/events" },
   { label: "Gallery", to: "/gallery" },
   { label: "Contact", to: "/contact" },
-];
-
-export const sectorNav = [
-  { label: "Dormi Students Guide", to: "/sectors/students" },
-  { label: "Dormi Graduates Guide", to: "/sectors/graduates" },
-  { label: "Dormi Workers Guide", to: "/sectors/workers" },
-  { label: "Dormi Entrepreneur Guide", to: "/sectors/entrepreneurs" },
 ];

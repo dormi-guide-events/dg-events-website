@@ -126,7 +126,11 @@ sector
   slug              slug, from title, required
   remit             string, required — short label, e.g. "Academic & talent
                     discovery". Shown on event cards and sector page headers.
-  shortDescription  text, required — a sentence or two on who it is for
+  headline          string, optional — the bold line on the sector page
+  purpose           text, optional — the paragraph under the headline
+  shortDescription  text, required — a sentence or two on who it is for. Used
+                    on the home selector, the sectors index and as meta
+                    description.
   displayOrder      number, required — drives the student → graduate → worker →
                     entrepreneur progression the whole site is built around
   eventFormats      array of { name, description }, required, 1–6
@@ -157,6 +161,46 @@ manually-set field — that would rot the moment the client forgets to update it
 `eventFormats` allows 1–6 rather than exactly 3. Every sector runs three today,
 but that describes the current content, not a rule: locking it would stop a
 half-drafted sector saving or a fourth format ever being added.
+
+### How the frontend reads it
+
+- `src/lib/sanity.js` builds the read-only client and the image URL builder.
+  **Never add a token.** The dataset is public and the site only ever reads,
+  so drafts are unreachable by construction.
+- **All GROQ lives in `src/lib/queries.js`** — never inline in a component.
+- `src/lib/events.js` and `src/lib/sectors.js` are the data-access seam.
+  Sectors are cached as an in-flight promise, so the header, footer and page
+  body share one request.
+- Sector accent colours, step numbers and the desktop staircase offsets are
+  **presentation, not content** — they live in `src/lib/sectorTheme.js` and are
+  indexed by position in the progression, so reordering sectors in the CMS
+  moves the colour ramp with them.
+- Every fetch renders four states: loading, ready, empty and error. The empty
+  state is a designed component (`EmptyState`), never a blank div — this site
+  will genuinely have stretches with no upcoming events.
+- Images go through `SanityImage`, which emits a width-based `srcset` with
+  `auto=format` (WebP where supported) and an LQIP blur placeholder. Ghanaian
+  mobile data is a real cost; do not drop in a bare `<img src>`.
+
+- Rich text renders through `PortableText`, never `dangerouslySetInnerHTML`.
+  Link hrefs are checked against an allowlist of schemes first — an editor can
+  paste `javascript:` into a link field otherwise.
+
+**Social previews are not yet real.** `PageMeta` writes Open Graph and Twitter
+tags at runtime, which is fine for Google but useless for WhatsApp, Facebook
+and X: their scrapers do not execute JavaScript, so they only ever see the
+static `index.html`. Since event links get shared on WhatsApp constantly, this
+needs fixing before launch — prerender the event routes at build time, or add
+a Vercel edge middleware that injects the tags for crawler user-agents.
+
+Config lives in `.env` as `VITE_SANITY_PROJECT_ID`, `VITE_SANITY_DATASET` and
+`VITE_SANITY_API_VERSION`, with `.env.example` committed as the template.
+These are public values, but they stay out of source so the project can be
+repointed without a code change.
+
+**New origins need a CORS entry** or the browser is blocked, even on a public
+dataset: `cd studio && npx sanity cors add https://your-domain --no-credentials`.
+Use `--no-credentials` — the site sends no token and should not be allowed to.
 
 ### Studio conventions
 

@@ -1,59 +1,51 @@
-// The seam between the UI and wherever event data lives. Today that is a local
-// placeholder file; tomorrow it is a GROQ query against Sanity. Everything
-// here is async so no component can grow a dependency on the data being
-// available synchronously.
+// Event reads. The signatures are unchanged from the placeholder era on
+// purpose — only the source behind them moved to Sanity.
+//
+// `now` is computed per call rather than passed in from a component, so a
+// re-render can never produce a new value and retrigger a fetch loop.
 
-import { events } from "../data/events.js";
-
-// Only in dev, so the loading states stay exercised while we build. Production
-// pays nothing for this, and it goes away entirely with the real client.
-const SIMULATED_LATENCY_MS = import.meta.env.DEV ? 350 : 0;
-
-function startsAt(event) {
-  return new Date(event.startDate).getTime();
-}
-
-function delay(ms) {
-  if (ms <= 0) return Promise.resolve();
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// `sector` is an optional slug; omitting it means every sector.
-function inSector(sector) {
-  return (event) => !sector || event.sector === sector;
-}
+import { client } from "./sanity.js";
+import {
+  EVENT_BY_SLUG_QUERY,
+  PAST_EVENTS_QUERY,
+  RELATED_EVENTS_QUERY,
+  UPCOMING_EVENTS_QUERY,
+} from "./queries.js";
 
 /**
  * Events that have not started yet, soonest first.
  *
- * Upcoming is always derived from startDate — never a stored flag, which would
- * go stale the moment someone forgets to update it.
+ * Upcoming is derived from startDate every time it is asked for — never a
+ * stored flag, which would go stale the moment someone forgets to update it.
  */
-export async function fetchUpcomingEvents({
-  limit = 3,
-  sector,
-  now = Date.now(),
-} = {}) {
-  await delay(SIMULATED_LATENCY_MS);
-
-  return events
-    .filter(inSector(sector))
-    .filter((event) => startsAt(event) > now)
-    .sort((a, b) => startsAt(a) - startsAt(b))
-    .slice(0, limit);
+export function fetchUpcomingEvents({ limit = 3, sector = null } = {}) {
+  return client.fetch(UPCOMING_EVENTS_QUERY, {
+    limit,
+    sector,
+    now: new Date().toISOString(),
+  });
 }
 
 /** Events that have already run, most recent first. */
-export async function fetchPastEvents({
-  limit = 12,
-  sector,
-  now = Date.now(),
-} = {}) {
-  await delay(SIMULATED_LATENCY_MS);
+export function fetchPastEvents({ limit = 12, sector = null } = {}) {
+  return client.fetch(PAST_EVENTS_QUERY, {
+    limit,
+    sector,
+    now: new Date().toISOString(),
+  });
+}
 
-  return events
-    .filter(inSector(sector))
-    .filter((event) => startsAt(event) <= now)
-    .sort((a, b) => startsAt(b) - startsAt(a))
-    .slice(0, limit);
+/** One event by slug, with its rich description. Resolves to null if absent. */
+export function fetchEventBySlug(slug) {
+  return client.fetch(EVENT_BY_SLUG_QUERY, { slug });
+}
+
+/** Other events in the same sector, upcoming ones first. */
+export function fetchRelatedEvents({ slug, sector, limit = 3 }) {
+  return client.fetch(RELATED_EVENTS_QUERY, {
+    slug,
+    sector,
+    limit,
+    now: new Date().toISOString(),
+  });
 }

@@ -1,15 +1,24 @@
-// Accessors over the sector content. Mirrors the data/lib split used for
-// events: src/data holds the content, src/lib holds the ways of reading it.
+// Sector reads.
+//
+// The four sectors are needed by the header of almost every page, the footer
+// on all of them, and several sections in between. They also change about
+// never. So the request is made once per page load and shared: the in-flight
+// promise itself is cached, which means simultaneous callers on first paint
+// coalesce into a single network request rather than four.
 
-import { sectors } from "../data/sectors.js";
+import { client } from "./sanity.js";
+import { SECTORS_QUERY } from "./queries.js";
 
-export { sectors };
+let inFlight = null;
 
-export function getSector(slug) {
-  return sectors.find((sector) => sector.slug === slug);
-}
-
-/** The other three sectors, in progression order — used for cross-navigation. */
-export function getOtherSectors(slug) {
-  return sectors.filter((sector) => sector.slug !== slug);
+/** All sectors in progression order. Cached for the life of the page. */
+export function fetchSectors() {
+  if (!inFlight) {
+    inFlight = client.fetch(SECTORS_QUERY).catch((error) => {
+      // Do not cache a failure, or a transient blip would persist until reload.
+      inFlight = null;
+      throw error;
+    });
+  }
+  return inFlight;
 }

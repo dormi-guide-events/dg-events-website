@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local environment — real values live here, .env.example is the committed template
+.env
+.env.*
+!.env.example

@@ -9,7 +9,8 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "schema:deploy": "sanity schema deploy",
-    "seed": "sanity dataset import seed/sectors.ndjson --dataset production --replace"
+    "seed": "sanity dataset import seed/sectors.ndjson --dataset production --replace",
+    "seed:events": "sanity dataset import seed/events.ndjson --dataset production --replace"
   },
   "dependencies": {
     "@sanity/icons": "^5.2.1",

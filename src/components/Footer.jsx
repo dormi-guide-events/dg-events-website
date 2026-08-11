@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { mainNav, sectorNav } from "../lib/navigation.js";
+import { mainNav } from "../lib/navigation.js";
+import { useSectors } from "../hooks/useSectors.js";
 import logo from "../assets/logo.jpeg";
 
 // The label is how the number reads in Ghana; the href has to be a bare E.164
@@ -87,6 +88,10 @@ const headingClasses =
 
 export function Footer() {
   const year = new Date().getFullYear();
+  // Shares the cached sectors request with the rest of the page, so the footer
+  // costs no extra round trip. If it fails, the column simply does not render
+  // rather than breaking the footer.
+  const { sectors } = useSectors();
 
   return (
     <footer className="mt-auto bg-purple-900 text-off-white">
@@ -146,20 +151,22 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav aria-labelledby="footer-sectors">
-            <h2 id="footer-sectors" className={headingClasses}>
-              Our sectors
-            </h2>
-            <ul className="flex flex-col gap-3">
-              {sectorNav.map((sector) => (
-                <li key={sector.to}>
-                  <Link to={sector.to} className={linkClasses}>
-                    {sector.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {sectors.length > 0 && (
+            <nav aria-labelledby="footer-sectors">
+              <h2 id="footer-sectors" className={headingClasses}>
+                Our sectors
+              </h2>
+              <ul className="flex flex-col gap-3">
+                {sectors.map((sector) => (
+                  <li key={sector._id}>
+                    <Link to={sector.to} className={linkClasses}>
+                      {sector.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
 
           <div className="sm:col-span-2 lg:col-span-4">
             <h2 className={headingClasses}>Get in touch</h2>

@@ -48,6 +48,23 @@ export const sector = defineType({
         Rule.required().error("Say who this sector is for."),
     }),
     defineField({
+      name: "headline",
+      title: "Sector page headline",
+      type: "string",
+      description:
+        "The single bold line at the top of the sector page, under the name. For example: Choose a course knowing where it actually leads. Leave empty and the page simply omits it.",
+      validation: (Rule) =>
+        Rule.max(90).warning("Long headlines wrap awkwardly on a phone."),
+    }),
+    defineField({
+      name: "purpose",
+      title: "Sector page opening paragraph",
+      type: "text",
+      rows: 4,
+      description:
+        "The paragraph under the headline, explaining why this sector exists. Two or three sentences. Leave empty and the page simply omits it.",
+    }),
+    defineField({
       name: "displayOrder",
       title: "Order on the website",
       type: "number",

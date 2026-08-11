@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
 import { Reveal } from "./Reveal.jsx";
-import { getOtherSectors } from "../lib/sectors.js";
 
 /**
  * Cross-navigation at the foot of a sector page. Keeps the progression order
  * and each sector's accent so moving between them still feels like moving
  * along the same line.
+ *
+ * The sectors are passed in rather than fetched, because the page above has
+ * already loaded them to resolve the current one.
  */
-export function SectorNav({ currentSlug }) {
-  const others = getOtherSectors(currentSlug);
+export function SectorNav({ sectors }) {
+  if (!sectors || sectors.length === 0) return null;
 
   return (
     <section
@@ -26,8 +28,8 @@ export function SectorNav({ currentSlug }) {
         </Reveal>
 
         <ul className="mt-10 grid gap-6 md:grid-cols-3">
-          {others.map((sector, index) => (
-            <li key={sector.slug}>
+          {sectors.map((sector, index) => (
+            <li key={sector._id}>
               <Reveal delay={index * 0.06}>
                 <Link
                   to={sector.to}
@@ -41,11 +43,13 @@ export function SectorNav({ currentSlug }) {
                     {sector.step}
                   </p>
                   <h3 className="mt-2 font-serif text-lg text-purple-900">
-                    {sector.name}
+                    {sector.title}
                   </h3>
-                  <p className="mt-1.5 text-sm text-purple-700">
-                    {sector.remit}
-                  </p>
+                  {sector.remit && (
+                    <p className="mt-1.5 text-sm text-purple-700">
+                      {sector.remit}
+                    </p>
+                  )}
                   <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-purple-700">
                     Explore
                     <svg

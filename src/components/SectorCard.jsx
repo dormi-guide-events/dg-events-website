@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
  *   mobile   li has pl-12 (48px), node at -left-10 (-40px) → centre at 16px,
  *            which is exactly where the rail sits (left-4, -translate-x-1/2).
  *   lg       rail is gone, node moves onto the 2px rule at the card's top.
+ *
+ * `sector` arrives already merged with its theme by decorateSector().
  */
 export function SectorCard({ sector }) {
   return (
@@ -29,20 +31,24 @@ export function SectorCard({ sector }) {
       </p>
 
       <h3 className="mt-3 font-serif text-xl text-purple-900 md:text-2xl">
-        {sector.name}
+        {sector.title}
       </h3>
 
-      <p className="mt-1.5 text-sm font-medium text-purple-700">
-        {sector.remit}
-      </p>
+      {sector.remit && (
+        <p className="mt-1.5 text-sm font-medium text-purple-700">
+          {sector.remit}
+        </p>
+      )}
 
-      <p className="mt-3 text-sm leading-relaxed text-grey-500">
-        {sector.blurb}
-      </p>
+      {sector.shortDescription && (
+        <p className="mt-3 text-sm leading-relaxed text-grey-500">
+          {sector.shortDescription}
+        </p>
+      )}
 
       <ul className="mt-5 space-y-2">
-        {sector.formats.map((format) => (
-          <li key={format.name} className="flex gap-2.5 text-sm text-charcoal">
+        {(sector.eventFormats ?? []).map((format) => (
+          <li key={format._key} className="flex gap-2.5 text-sm text-charcoal">
             <span
               aria-hidden="true"
               className={`mt-2 h-1 w-1 shrink-0 rounded-full ${sector.accentBg}`}
