@@ -303,6 +303,39 @@ The failure state shows the phone number from the `siteSettings` singleton. If
 that document does not exist the line is dropped rather than guessed — never
 hardcode a fallback number.
 
+## Security headers, crawlers and structured data
+
+Headers are set in `vercel.json` for `/(.*)`. The CSP is the fragile one, so
+**anything added to the site has to be checked against it**:
+
+| Directive | Why it is what it is |
+|---|---|
+| `script-src 'self'` | The build emits no inline scripts, so no `unsafe-inline` is needed. Keep it that way. |
+| `style-src 'self' fonts.googleapis.com` | The Google Fonts stylesheet. |
+| `style-src-attr 'unsafe-inline'` | Unavoidable: Framer Motion and `SanityImage`'s LQIP set style attributes. Scoped to attributes so inline `<style>` blocks stay banned. |
+| `font-src 'self' fonts.gstatic.com` | The font files themselves. |
+| `img-src 'self' data: cdn.sanity.io` | `data:` is the LQIP blur placeholder. |
+| `connect-src 'self' *.api.sanity.io *.apicdn.sanity.io` | GROQ queries, and `/api/contact`. |
+
+Adding a third-party script, analytics or an embedded map means adding to this
+policy — and re-testing every route, because a CSP that breaks the site is
+worse than no CSP.
+
+`/sitemap.xml` and `/robots.txt` are **functions**, not static files, for the
+same reason the link previews are: events are published long after a deploy,
+and a build-time sitemap would never list them. `robots.txt` serves a blanket
+`Disallow: /` when `VERCEL_ENV` is not `production`, so preview deployments
+stay out of search results. It deliberately does **not** disallow `/events` —
+Meta's preview scrapers respect robots.txt, so that would kill every WhatsApp
+preview.
+
+Schema.org markup is built in `src/lib/structuredData.js` and rendered by
+`JsonLd`: `Organization` on the homepage, `Event` on event pages. `Event`
+carries everything Google requires (name, startDate, location) plus most of
+what it recommends. **`offers` is deliberately absent** — bookings happen by
+phone, so there is no price or ticket URL, and inventing one would be worse
+than omitting it.
+
 ## Conventions
 
 - **Mobile-first.** Write base styles for small screens, then `md:` and `lg:`.

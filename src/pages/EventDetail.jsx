@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { PageMeta } from "../components/PageMeta.jsx";
+import { JsonLd } from "../components/JsonLd.jsx";
 import { PageHeader } from "../components/PageHeader.jsx";
 import { SanityImage } from "../components/SanityImage.jsx";
 import { PortableText } from "../components/PortableText.jsx";
@@ -9,6 +10,7 @@ import { ClosingCta } from "../components/ClosingCta.jsx";
 import { useAsyncData } from "../hooks/useAsyncData.js";
 import { fetchEventBySlug } from "../lib/events.js";
 import { themeForDisplayOrder } from "../lib/sectorTheme.js";
+import { eventSchema } from "../lib/structuredData.js";
 import { formatEventWhen } from "../lib/dates.js";
 import { urlFor } from "../lib/sanity.js";
 import { secondaryButton } from "../lib/ui.js";
@@ -85,6 +87,9 @@ export function EventDetail() {
         image={ogImage}
         imageAlt={event.coverImage?.alt}
       />
+
+      {/* What puts this event into Google's event results. */}
+      <JsonLd data={eventSchema(event)} />
 
       <article>
         <PageHeader

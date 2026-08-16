@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { absoluteUrl } from "../lib/siteUrl.js";
 
 /**
  * Per-page document title, description and social preview tags.
@@ -19,14 +20,10 @@ import { useEffect } from "react";
 
 const SITE_NAME = "Dormi Guide Events";
 
-// Absolute, because preview scrapers will not resolve a relative og:image.
-const SITE_URL =
-  import.meta.env.VITE_SITE_URL ||
-  (typeof window === "undefined" ? "" : window.location.origin);
-
 // Pages without artwork of their own fall back to the logo card. Without this
 // they would have no og:image at all once the static defaults are cleared.
-const DEFAULT_IMAGE = `${SITE_URL}/og-default.png`;
+// Absolute, because preview scrapers will not resolve a relative og:image.
+const DEFAULT_IMAGE = absoluteUrl("/og-default.png");
 const DEFAULT_IMAGE_ALT = "The Dormi Guide Events logo";
 
 /** Meta descriptions are cut off around 160 characters, so cut cleanly. */
