@@ -4,6 +4,7 @@ import { SectionHeading } from "../components/SectionHeading.jsx";
 import { ContactForm } from "../components/ContactForm.jsx";
 import { useAsyncData } from "../hooks/useAsyncData.js";
 import { fetchSiteSettings } from "../lib/settings.js";
+import { telHref } from "../lib/phone.js";
 
 // Only the platforms the Studio offers, in the order they appear there.
 const PLATFORM_LABELS = {
@@ -16,11 +17,6 @@ const PLATFORM_LABELS = {
   whatsapp: "WhatsApp",
 };
 
-/** A phone number reads with spaces but has to dial without them. */
-function telHref(phone) {
-  const digits = String(phone).replace(/[^\d+]/g, "");
-  return digits ? `tel:${digits}` : undefined;
-}
 
 export function Contact() {
   const { status, data: settings } = useAsyncData(fetchSiteSettings, []);
@@ -79,7 +75,7 @@ export function Contact() {
 
                 {status === "ready" && hasDetails && (
                   <dl className="space-y-5 text-sm">
-                    {settings.phone && (
+                    {settings.phone && telHref(settings.phone) && (
                       <div>
                         <dt className="font-semibold text-purple-700">Phone</dt>
                         <dd className="mt-1">
@@ -154,7 +150,13 @@ export function Contact() {
                 title="Or write to us here."
                 lead="Everything is required so we can reply properly."
               />
-              <ContactForm />
+              {/* Both come from the siteSettings singleton. When that document
+                  does not exist they are undefined, and the form's failure
+                  state drops the "call us" line rather than guessing. */}
+              <ContactForm
+                phone={settings?.phone}
+                contactEmail={settings?.contactEmail}
+              />
             </div>
           </div>
         </div>

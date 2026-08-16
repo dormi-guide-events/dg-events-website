@@ -253,6 +253,56 @@ Use `--no-credentials` — the site sends no token and should not be allowed to.
 - Seed the four sectors with `cd studio && npm run seed`. Fixed document ids
   (`sector-students` and so on) keep it idempotent and referenceable.
 
+## Contact form
+
+The form posts to `/api/contact`. The logic lives in `server/contact/`, which
+knows nothing about any hosting platform: it takes plain values and returns
+`{ status, body }`. `api/contact.js` is a thin Vercel adapter that reads the
+request and writes the response — **if this moves to Cloudflare Pages, that
+adapter is the only file to rewrite** (the shape is written out in a comment
+at the top of it).
+
+```
+server/contact/index.js          orchestration
+server/contact/validate.js       caps, validation, header sanitisation
+server/contact/rateLimit.js      Upstash over REST
+server/contact/mailers/          web3forms.js, resend.js — same interface
+api/contact.js                   Vercel adapter (thin)
+```
+
+**The mailer is a seam.** `CONTACT_MAILER` picks the provider and nothing else
+changes. It defaults to `web3forms`, which needs no DNS-verified sending
+domain; switch to `resend` once DG Events own one, and set `RESEND_API_KEY`,
+`CONTACT_FROM_EMAIL` and `CONTACT_TO_EMAIL`. Mail is delivered to their
+existing inbox either way — no new mailbox.
+
+**Web3Forms is called from the server, never the browser.** A Web3Forms key
+embedded in a page is public, and anyone reading it could post straight to
+their endpoint and skip every check below.
+
+Defences, in the order they run: origin check → honeypot (reports success,
+sends nothing) → hard length caps rejected before parsing → full re-validation
+→ IP rate limit. Rate limiting **fails open** — a contact form that silently
+stops accepting messages because a rate-limit store is down is worse than one
+that lets an extra message through.
+
+`name`, `email` and `subject` are stripped of CR, LF and U+2028/U+2029 before
+they touch a Subject or Reply-To, or an attacker could append headers of their
+own. Those regexes are built with `new RegExp` from escaped strings: U+2028 and
+U+2029 are line terminators in JavaScript, so writing them raw inside a regex
+literal is a syntax error.
+
+Reply-To is the visitor so a reply just works; From is never the visitor, which
+would fail SPF.
+
+**The server-side variables have no `VITE_` prefix, deliberately.** Vite inlines
+every `VITE_*` variable into the browser bundle, so a key named `VITE_ANYTHING`
+is public. See `.env.example`.
+
+The failure state shows the phone number from the `siteSettings` singleton. If
+that document does not exist the line is dropped rather than guessed — never
+hardcode a fallback number.
+
 ## Conventions
 
 - **Mobile-first.** Write base styles for small screens, then `md:` and `lg:`.
