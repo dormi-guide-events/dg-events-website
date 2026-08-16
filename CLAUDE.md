@@ -203,11 +203,36 @@ every page ends up with two titles.
 `%VITE_SITE_URL%`, substituted by Vite at build time. **Set `VITE_SITE_URL` in
 Vercel** or the production preview will point at whatever the fallback says.
 
-**Per-page previews still are not real.** The static block is the only thing
-WhatsApp, Facebook and X ever see, because their scrapers do not run
-JavaScript — so a shared `/events/some-event` link shows the generic site card
-rather than that event's cover. Fixing it needs prerendering of the event
-routes, or a Vercel edge middleware that injects tags for crawler user-agents.
+**Event links get their own preview, from a function.** `/events/:slug` is
+rewritten in `vercel.json` to `api/event-preview.js`, which fetches the event
+from Sanity, injects its title, summary and cover into the shell's
+`data-default` tags, and serves that. So a link shared on WhatsApp previews as
+the event itself, and a newly published event is correct immediately — no
+rebuild.
+
+Things about it that are deliberate:
+
+- **No user-agent sniffing.** One WhatsApp share fires `WhatsApp/2.x`,
+  `facebookexternalhit` and `Facebot`, and Meta changes them. Everyone gets the
+  same bytes, so there is no list to maintain and `curl` reproduces exactly
+  what a scraper sees.
+- **The injected tags keep `data-default`**, so `PageMeta` strips them on mount
+  exactly as it does the static ones. Drop the marker and every event page ends
+  up with two titles.
+- **`fm=jpg`, not `auto=format`.** Scraper support for WebP is inconsistent and
+  a preview that fails to render is worse than a larger one.
+- **Tags are replaced in place, not appended** — WhatsApp stops parsing after
+  the first few kilobytes.
+- **It fails open.** If Sanity is unreachable the shell is served unchanged, so
+  the page still works and only the preview falls back to the site default. An
+  unknown slug returns a real 404.
+
+WhatsApp caches a preview for 24–72 hours with no way to purge it, which is why
+this runs at request time rather than at build time: a wrong first scrape would
+stick for days.
+
+Other routes still share as the generic site card. Sector pages could be added
+to the same function; everything else is stable enough not to need it.
 
 Config lives in `.env` as `VITE_SANITY_PROJECT_ID`, `VITE_SANITY_DATASET` and
 `VITE_SANITY_API_VERSION`, with `.env.example` committed as the template.
