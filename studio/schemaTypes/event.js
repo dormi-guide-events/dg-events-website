@@ -1,5 +1,6 @@
 import { CalendarIcon } from "@sanity/icons/Calendar";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { slugOptions, validateSlug } from "../lib/slug.js";
 
 export const event = defineType({
   name: "event",
@@ -20,9 +21,10 @@ export const event = defineType({
       type: "slug",
       description:
         "The last part of the page link, for example dgevents.com/events/career-path-conference. Press Generate to build it from the event name.",
-      options: { source: "title", maxLength: 96 },
-      validation: (Rule) =>
-        Rule.required().error("Press Generate to create the web address."),
+      options: slugOptions("event"),
+      // A slug is a URL. Whitespace or capitals here produce a page that no
+      // link on the site can reach — see studio/lib/slug.js.
+      validation: (Rule) => Rule.required().custom(validateSlug),
     }),
     defineField({
       name: "sector",

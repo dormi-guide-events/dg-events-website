@@ -1,5 +1,6 @@
 import { TagIcon } from "@sanity/icons/Tag";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { slugOptions, validateSlug } from "../lib/slug.js";
 
 export const sector = defineType({
   name: "sector",
@@ -21,9 +22,9 @@ export const sector = defineType({
       type: "slug",
       description:
         "The last part of the page link, for example dgevents.com/sectors/students. Press Generate, then shorten it to a single word if you can.",
-      options: { source: "title", maxLength: 96 },
-      validation: (Rule) =>
-        Rule.required().error("Press Generate to create the web address."),
+      options: slugOptions("sector"),
+      // Same rules as an event's — see studio/lib/slug.js.
+      validation: (Rule) => Rule.required().custom(validateSlug),
     }),
     defineField({
       name: "remit",

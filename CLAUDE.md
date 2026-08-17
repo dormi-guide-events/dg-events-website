@@ -104,6 +104,16 @@ Redeploy the hosted schema after any schema edit: `npx sanity schema deploy`.
 not `@sanity/icons`. v5 removed the root named exports and they now resolve to
 `undefined` silently rather than failing.
 
+**Slug fields go through `studio/lib/slug.js`** — never a bare
+`options: { source: "title" }`. A slug is a URL, and the field will otherwise
+store whatever is typed into it. An event published with the slug
+`"career-path-conference-2026 "` was unreachable: the card rendered
+`href=".../career-path-conference-2026 "`, browsers strip trailing whitespace
+when resolving a URL, and the detail page's exact-match GROQ then found nothing.
+The helper supplies a sanitising `slugify`, a validation rule that rejects
+whitespace, capitals and punctuation in plain language, and an `isUnique` check —
+without which two documents can claim one address and `[0]` picks arbitrarily.
+
 ### Content models
 
 ```
