@@ -26,7 +26,8 @@ export function FilterPills({ label, basePath, paramName, options, active }) {
                 to={hrefFor(option.value)}
                 aria-current={isActive ? "true" : undefined}
                 className={[
-                  "inline-flex items-center rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                  // py-3 rather than py-2 so the pill clears the 44px minimum tap target.
+                  "inline-flex items-center rounded-full border px-4 py-3 text-sm font-medium transition-colors",
                   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500",
                   isActive
                     ? "border-purple-700 bg-purple-700 text-off-white"

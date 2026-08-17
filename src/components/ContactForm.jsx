@@ -168,7 +168,8 @@ export function ContactForm({ phone, contactEmail }) {
             disabled={busy}
             value={values.name}
             onChange={update("name")}
-            aria-invalid={errors.name ? "true" : undefined}
+            aria-required="true"
+          aria-invalid={errors.name ? "true" : undefined}
             aria-describedby={errorId("name")}
             className={`${fieldClasses} ${errors.name ? "border-pink-500" : ""}`}
           />
@@ -192,7 +193,8 @@ export function ContactForm({ phone, contactEmail }) {
             disabled={busy}
             value={values.email}
             onChange={update("email")}
-            aria-invalid={errors.email ? "true" : undefined}
+            aria-required="true"
+          aria-invalid={errors.email ? "true" : undefined}
             aria-describedby={errorId("email")}
             className={`${fieldClasses} ${errors.email ? "border-pink-500" : ""}`}
           />
@@ -216,6 +218,7 @@ export function ContactForm({ phone, contactEmail }) {
           disabled={busy}
           value={values.subject}
           onChange={update("subject")}
+          aria-required="true"
           aria-invalid={errors.subject ? "true" : undefined}
           aria-describedby={errorId("subject")}
           className={`${fieldClasses} ${errors.subject ? "border-pink-500" : ""}`}
@@ -239,6 +242,7 @@ export function ContactForm({ phone, contactEmail }) {
           disabled={busy}
           value={values.message}
           onChange={update("message")}
+          aria-required="true"
           aria-invalid={errors.message ? "true" : undefined}
           aria-describedby={errorId("message")}
           className={`${fieldClasses} resize-y ${errors.message ? "border-pink-500" : ""}`}
@@ -299,7 +303,7 @@ export function ContactForm({ phone, contactEmail }) {
                 Call us on{" "}
                 <a
                   href={dialable}
-                  className="rounded-sm font-semibold text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                  className="rounded-sm font-semibold text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
                 >
                   {phone}
                 </a>
@@ -309,7 +313,7 @@ export function ContactForm({ phone, contactEmail }) {
                     or email{" "}
                     <a
                       href={`mailto:${contactEmail}`}
-                      className="rounded-sm font-semibold text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                      className="rounded-sm font-semibold text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
                     >
                       {contactEmail}
                     </a>
@@ -322,7 +326,7 @@ export function ContactForm({ phone, contactEmail }) {
                 Email us at{" "}
                 <a
                   href={`mailto:${contactEmail}`}
-                  className="rounded-sm font-semibold text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                  className="rounded-sm font-semibold text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
                 >
                   {contactEmail}
                 </a>{" "}

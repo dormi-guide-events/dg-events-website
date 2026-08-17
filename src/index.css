@@ -1,6 +1,62 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
+   Fonts, self-hosted.
+
+   Previously these came from fonts.googleapis.com, which cost a second
+   render-blocking stylesheet plus DNS and TLS to two extra domains — 1.8s of
+   blocking time in Lighthouse. Serving them ourselves folds the declarations
+   into this file and lets the woff2 files be preloaded directly.
+
+   Same bytes as before: Inter is a variable font, so one file covers 400, 500
+   and 600, and a browser only downloads the subsets a page actually uses —
+   about 70 kB for the latin faces, matching what Google was sending.
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/playfair-display-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/playfair-display-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---------------------------------------------------------------------------
    Brand tokens — sampled from the official logo (see CLAUDE.md).
 
    These are the only purple, pink and gold shades that are on brand. Tailwind's
@@ -35,10 +91,13 @@
     @apply bg-off-white font-sans text-charcoal antialiased;
   }
 
+  /* 600 is the only Playfair weight loaded. Tailwind's preflight resets
+     headings to font-weight: inherit, which left them asking for 400 and
+     relying on the browser to substitute the one face it had. */
   h1,
   h2,
   h3 {
-    @apply font-serif;
+    @apply font-serif font-semibold;
   }
 
   /* Anything driven by CSS is stilled here. Framer Motion is handled in JS with

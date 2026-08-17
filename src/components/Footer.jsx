@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { mainNav } from "../lib/navigation.js";
 import { useSectors } from "../hooks/useSectors.js";
-import logo from "../assets/logo.jpeg";
+import logo from "../assets/logo-192.png";
 
 // The label is how the number reads in Ghana; the href has to be a bare E.164
 // string or the handset will not dial it.
@@ -91,7 +91,7 @@ export function Footer() {
   // Shares the cached sectors request with the rest of the page, so the footer
   // costs no extra round trip. If it fails, the column simply does not render
   // rather than breaking the footer.
-  const { sectors } = useSectors();
+  const { status, sectors } = useSectors();
 
   return (
     <footer className="mt-auto bg-purple-900 text-off-white">
@@ -110,6 +110,8 @@ export function Footer() {
               <img
                 src={logo}
                 alt="Dormi Guide Events"
+                width={192}
+                height={192}
                 className="h-16 w-auto rounded-xl bg-white p-1.5"
               />
             </Link>
@@ -127,7 +129,7 @@ export function Footer() {
                   <a
                     href={social.href}
                     aria-label={`DG Events on ${social.label}`}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-off-white/10 text-off-white transition-colors hover:bg-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-400"
+                    className="flex h-11 w-11 items-center justify-center rounded-full bg-off-white/10 text-off-white transition-colors hover:bg-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-400"
                   >
                     {social.icon}
                   </a>
@@ -151,19 +153,29 @@ export function Footer() {
             </ul>
           </nav>
 
-          {sectors.length > 0 && (
+          {/* Rendered even while the sectors are still in flight, with
+              placeholder rows holding the exact space the real links will
+              occupy. Without this the footer jumped down the moment they
+              arrived — the single largest layout shift on the site. */}
+          {(status === "loading" || sectors.length > 0) && (
             <nav aria-labelledby="footer-sectors">
               <h2 id="footer-sectors" className={headingClasses}>
                 Our sectors
               </h2>
               <ul className="flex flex-col gap-3">
-                {sectors.map((sector) => (
-                  <li key={sector._id}>
-                    <Link to={sector.to} className={linkClasses}>
-                      {sector.title}
-                    </Link>
-                  </li>
-                ))}
+                {status === "loading"
+                  ? [0, 1, 2, 3].map((index) => (
+                      <li key={index} aria-hidden="true" className="py-0.5">
+                        <span className="block h-4 w-40 rounded-full bg-off-white/10" />
+                      </li>
+                    ))
+                  : sectors.map((sector) => (
+                      <li key={sector._id}>
+                        <Link to={sector.to} className={linkClasses}>
+                          {sector.title}
+                        </Link>
+                      </li>
+                    ))}
               </ul>
             </nav>
           )}

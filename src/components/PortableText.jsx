@@ -86,7 +86,7 @@ const components = {
           {...(external
             ? { target: "_blank", rel: "noopener noreferrer" }
             : {})}
-          className="rounded-sm text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+          className="rounded-sm text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
         >
           {children}
         </a>

@@ -138,7 +138,7 @@ export function MobileMenu({ isOpen, onClose }) {
                           "flex items-center gap-3 rounded-lg px-4 py-3 text-lg transition-colors",
                           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500",
                           isActive
-                            ? "bg-pink-100 font-semibold text-pink-500"
+                            ? "bg-pink-100 font-semibold text-purple-700"
                             : "text-charcoal hover:bg-pink-100/60 hover:text-purple-700",
                         ].join(" ")
                       }

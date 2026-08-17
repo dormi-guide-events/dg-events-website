@@ -336,6 +336,40 @@ what it recommends. **`offers` is deliberately absent** — bookings happen by
 phone, so there is no price or ticket URL, and inventing one would be worse
 than omitting it.
 
+## Accessibility and performance rules
+
+**pink-500 is never small text.** `#E0417F` on off-white is 3.83:1 — below the
+4.5:1 body-text minimum, and worse on `pink-100`. It is for fills, rules,
+nodes, gradients, focus rings and display type 24px and over. Small text and
+link hovers use purple-700 or purple-900. The active nav item is purple-700
+with the pink gradient underline carrying the accent.
+
+**Never layer a text colour on top of a button class.** `secondaryButton`
+already sets `text-purple-700`; appending `text-off-white` does not win,
+because both are single-class selectors and the generated stylesheet's order
+decides, not the class attribute's. That shipped purple-700 text on a
+purple-900 panel at 1.22:1. Use `secondaryButtonOnDark` instead, and add a
+variant rather than an override next time.
+
+**Interactive targets are at least 44x44.** Buttons use `py-3.5`, pills `py-3`,
+icon buttons `h-11 w-11`.
+
+**Loading skeletons must approximate the height of what they replace.** A short
+skeleton under a long page makes the footer leap when content lands — that was
+a 0.564 CLS on sector pages. The footer's sector column renders placeholder
+rows while the request is in flight for the same reason.
+
+**Fonts are self-hosted** in `public/fonts`, declared in `src/index.css`.
+Google Fonts cost a render-blocking third-party stylesheet plus two extra
+DNS/TLS handshakes. Inter is a variable font — one file covers 400/500/600, so
+do not add per-weight files. Headings are `font-semibold`, because 600 is the
+only Playfair weight loaded. The two latin subsets are preloaded in
+`index.html`; `crossorigin` is required there even same-origin.
+
+**Routes are code-split** in `src/App.jsx`, with every chunk prefetched on idle.
+The split alone would trade a faster first paint for a blank flash on first
+navigation; the prefetch buys both. Home and NotFound stay in the entry chunk.
+
 ## Conventions
 
 - **Mobile-first.** Write base styles for small screens, then `md:` and `lg:`.

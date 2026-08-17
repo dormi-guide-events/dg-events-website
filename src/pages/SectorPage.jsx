@@ -19,19 +19,62 @@ export function SectorPage() {
   const { status, sector, others } = useSector(slug);
 
   if (status === "loading") {
+    // Deliberately mirrors the real page's structure and roughly its height.
+    // A short skeleton under a long page is what made the footer jump when the
+    // content arrived — a 0.56 layout shift, the worst on the site.
     return (
-      <div
-        className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 lg:px-8"
-        aria-busy="true"
-      >
+      <div aria-busy="true">
         <p role="status" className="sr-only">
           Loading sector…
         </p>
-        <div aria-hidden="true" className="space-y-4">
-          <div className="h-0.5 w-16 animate-pulse bg-purple-900/10" />
-          <div className="h-3 w-52 animate-pulse rounded-full bg-purple-900/10" />
-          <div className="h-12 w-3/4 animate-pulse rounded-lg bg-purple-900/10" />
-          <div className="h-4 w-2/3 animate-pulse rounded-full bg-purple-900/10" />
+        <div aria-hidden="true">
+          <div className="mx-auto w-full max-w-6xl px-4 pt-14 pb-14 md:px-6 lg:px-8 lg:pt-20 lg:pb-20">
+            <div className="h-0.5 w-16 animate-pulse bg-purple-900/10" />
+            <div className="mt-7 h-3 w-52 animate-pulse rounded-full bg-purple-900/10" />
+            <div className="mt-6 h-12 w-3/4 animate-pulse rounded-lg bg-purple-900/10 sm:h-14 lg:h-16" />
+            <div className="mt-6 h-5 w-2/3 animate-pulse rounded-full bg-purple-900/10" />
+            <div className="mt-6 h-4 w-full max-w-2xl animate-pulse rounded-full bg-purple-900/10" />
+            <div className="mt-2 h-4 w-5/6 max-w-2xl animate-pulse rounded-full bg-purple-900/10" />
+          </div>
+
+          <div className="border-t border-purple-900/10 py-16 md:py-24">
+            <div className="mx-auto w-full max-w-6xl px-4 md:px-6 lg:px-8">
+              <div className="h-3 w-32 animate-pulse rounded-full bg-purple-900/10" />
+              <div className="mt-5 h-9 w-2/3 animate-pulse rounded-lg bg-purple-900/10" />
+              <div className="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+                {[0, 1, 2].map((index) => (
+                  <div key={index} className="border-t border-purple-900/10 pt-6">
+                    <div className="h-8 w-10 animate-pulse rounded bg-purple-900/10" />
+                    <div className="mt-4 h-5 w-3/4 animate-pulse rounded-full bg-purple-900/10" />
+                    <div className="mt-3 h-3 w-full animate-pulse rounded-full bg-purple-900/10" />
+                    <div className="mt-2 h-3 w-5/6 animate-pulse rounded-full bg-purple-900/10" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-purple-900/10 py-16 md:py-24">
+            <div className="mx-auto w-full max-w-6xl px-4 md:px-6 lg:px-8">
+              <div className="h-3 w-28 animate-pulse rounded-full bg-purple-900/10" />
+              <div className="mt-5 h-9 w-1/2 animate-pulse rounded-lg bg-purple-900/10" />
+              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {[0, 1, 2].map((index) => (
+                  <div
+                    key={index}
+                    className="overflow-hidden rounded-2xl border border-purple-900/10"
+                  >
+                    <div className="aspect-video animate-pulse bg-purple-900/10" />
+                    <div className="space-y-3 p-5">
+                      <div className="h-3 w-28 animate-pulse rounded-full bg-purple-900/10" />
+                      <div className="h-5 w-3/4 animate-pulse rounded-full bg-purple-900/10" />
+                      <div className="h-3 w-full animate-pulse rounded-full bg-purple-900/10" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

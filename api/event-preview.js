@@ -169,32 +169,38 @@ export default async function handler(req, res) {
 
   const slug = String(req.query?.slug || "");
 
-  // The built shell. /index.html is a real file, and Vercel checks the
-  // filesystem before rewrites, so this cannot loop back into this function.
-  let html;
-  try {
-    const shell = await fetch(`${origin}/index.html`);
-    if (!shell.ok) throw new Error(`shell responded ${shell.status}`);
-    html = await shell.text();
-  } catch (error) {
+  // Both requests start together. They were sequential, which put the Sanity
+  // round trip end to end with the shell fetch and pushed the document
+  // response past a second.
+  //
+  // The shell is /index.html, a real file — Vercel checks the filesystem
+  // before rewrites, so this cannot loop back into this function.
+  const [shellResult, eventResult] = await Promise.allSettled([
+    fetch(`${origin}/index.html`).then((response) => {
+      if (!response.ok) throw new Error(`shell responded ${response.status}`);
+      return response.text();
+    }),
+    fetchEvent(slug),
+  ]);
+
+  if (shellResult.status === "rejected") {
     // Nothing sensible to serve without the shell.
-    console.error("Could not load the app shell:", error);
+    console.error("Could not load the app shell:", shellResult.reason);
     res.status(502).send("Temporarily unavailable");
     return;
   }
+  const html = shellResult.value;
 
-  let event;
-  try {
-    event = await fetchEvent(slug);
-  } catch (error) {
+  if (eventResult.status === "rejected") {
     // Fail open: the CMS being unreachable must not take the page down. The
     // visitor gets a working SPA and the generic site preview.
-    console.error("Could not load event for preview:", error);
+    console.error("Could not load event for preview:", eventResult.reason);
     res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.status(200).send(html);
     return;
   }
+  const event = eventResult.value;
 
   if (!event) {
     // A real 404 so scrapers do not build a preview for a page that is not

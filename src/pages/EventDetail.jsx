@@ -13,7 +13,7 @@ import { themeForDisplayOrder } from "../lib/sectorTheme.js";
 import { eventSchema } from "../lib/structuredData.js";
 import { formatEventWhen } from "../lib/dates.js";
 import { urlFor } from "../lib/sanity.js";
-import { secondaryButton } from "../lib/ui.js";
+import { secondaryButtonOnDark } from "../lib/ui.js";
 import { NotFound } from "./NotFound.jsx";
 
 export function EventDetail() {
@@ -25,19 +25,48 @@ export function EventDetail() {
 
   if (status === "loading") {
     return (
-      <div
-        className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 lg:px-8"
-        aria-busy="true"
-      >
+      // Mirrors the real page's structure so the footer does not jump down
+      // when the event arrives.
+      <div aria-busy="true">
         <p role="status" className="sr-only">
           Loading event…
         </p>
-        <div aria-hidden="true" className="space-y-4">
-          <div className="h-0.5 w-16 animate-pulse bg-purple-900/10" />
-          <div className="h-3 w-44 animate-pulse rounded-full bg-purple-900/10" />
-          <div className="h-12 w-3/4 animate-pulse rounded-lg bg-purple-900/10" />
-          <div className="h-4 w-2/3 animate-pulse rounded-full bg-purple-900/10" />
-          <div className="mt-8 aspect-video w-full animate-pulse rounded-2xl bg-purple-900/10" />
+        <div aria-hidden="true">
+          <div className="mx-auto w-full max-w-6xl px-4 pt-14 pb-14 md:px-6 lg:px-8 lg:pt-20 lg:pb-20">
+            <div className="h-0.5 w-16 animate-pulse bg-purple-900/10" />
+            <div className="mt-7 h-3 w-56 animate-pulse rounded-full bg-purple-900/10" />
+            <div className="mt-6 h-12 w-3/4 animate-pulse rounded-lg bg-purple-900/10 sm:h-14 lg:h-16" />
+            <div className="mt-6 h-5 w-2/3 animate-pulse rounded-full bg-purple-900/10" />
+            <div className="mt-8 h-4 w-1/2 animate-pulse rounded-full bg-purple-900/10" />
+            <div className="mt-10 aspect-video w-full animate-pulse rounded-2xl bg-purple-900/10" />
+          </div>
+
+          <div className="border-t border-purple-900/10 py-16 md:py-24">
+            <div className="mx-auto w-full max-w-6xl px-4 md:px-6 lg:px-8">
+              <div className="lg:grid lg:grid-cols-3 lg:gap-12">
+                <div className="lg:col-start-3 lg:row-start-1">
+                  <div className="h-52 w-full animate-pulse rounded-2xl bg-purple-900/10" />
+                  <div className="mt-8 space-y-4 border-t border-purple-900/10 pt-6">
+                    {[0, 1, 2].map((index) => (
+                      <div key={index}>
+                        <div className="h-3 w-16 animate-pulse rounded-full bg-purple-900/10" />
+                        <div className="mt-2 h-4 w-40 animate-pulse rounded-full bg-purple-900/10" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-12 space-y-4 lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mt-0">
+                  {[0, 1, 2, 3, 4, 5].map((index) => (
+                    <div
+                      key={index}
+                      className="h-4 animate-pulse rounded-full bg-purple-900/10"
+                      style={{ width: `${index % 3 === 2 ? 70 : 100}%` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -98,7 +127,7 @@ export function EventDetail() {
             event.sector ? (
               <Link
                 to={`/sectors/${event.sector.slug}`}
-                className="rounded-sm transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                className="rounded-sm transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
               >
                 {event.sector.title}
                 {event.sector.remit ? ` · ${event.sector.remit}` : ""}
@@ -152,7 +181,7 @@ export function EventDetail() {
                       </p>
                       <Link
                         to="/contact"
-                        className={`${secondaryButton} mt-6 w-full border-off-white/25 text-off-white hover:border-off-white hover:bg-off-white/10`}
+                        className={`${secondaryButtonOnDark} mt-6 w-full`}
                       >
                         Contact us
                       </Link>
@@ -186,7 +215,7 @@ export function EventDetail() {
                         <dd className="mt-1">
                           <Link
                             to={`/sectors/${event.sector.slug}`}
-                            className="rounded-sm text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                            className="rounded-sm text-purple-700 underline decoration-pink-500 underline-offset-4 transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
                           >
                             {event.sector.title}
                           </Link>
@@ -212,7 +241,7 @@ export function EventDetail() {
                 <p className="mt-12">
                   <Link
                     to="/events"
-                    className="inline-flex items-center gap-2 rounded-sm text-sm font-semibold text-purple-700 transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                    className="inline-flex items-center gap-2 rounded-sm py-3 text-sm font-semibold text-purple-700 transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
                   >
                     <svg
                       aria-hidden="true"

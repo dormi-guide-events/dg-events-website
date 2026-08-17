@@ -74,12 +74,25 @@
       content="%VITE_SITE_URL%/og-default.png"
     />
 
-    <!-- Only the weights actually used: mobile data is a real cost here. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts are self-hosted (see src/index.css) rather than fetched from
+         Google, which removes a render-blocking third-party stylesheet and two
+         extra DNS/TLS handshakes. Only the latin subsets are preloaded — they
+         are the two faces every page paints with; latin-ext is fetched on
+         demand for the rare accented character. crossorigin is required even
+         same-origin, because fonts are always fetched in CORS mode. -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/inter-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/playfair-display-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
   </head>
   <body>

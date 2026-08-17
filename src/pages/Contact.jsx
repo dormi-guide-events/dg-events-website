@@ -81,7 +81,7 @@ export function Contact() {
                         <dd className="mt-1">
                           <a
                             href={telHref(settings.phone)}
-                            className="rounded-sm text-charcoal transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                            className="rounded-sm text-charcoal transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
                           >
                             {settings.phone}
                           </a>
@@ -95,7 +95,7 @@ export function Contact() {
                         <dd className="mt-1">
                           <a
                             href={`mailto:${settings.contactEmail}`}
-                            className="rounded-sm break-words text-charcoal transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                            className="rounded-sm break-words text-charcoal transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
                           >
                             {settings.contactEmail}
                           </a>
@@ -127,7 +127,7 @@ export function Contact() {
                                   href={link.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="rounded-sm text-charcoal underline decoration-pink-500 underline-offset-4 transition-colors hover:text-pink-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
+                                  className="rounded-sm text-charcoal underline decoration-pink-500 underline-offset-4 transition-colors hover:text-purple-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500"
                                 >
                                   {PLATFORM_LABELS[link.platform] ||
                                     link.platform}

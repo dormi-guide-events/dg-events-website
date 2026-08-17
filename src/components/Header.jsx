@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { MobileMenu } from "./MobileMenu.jsx";
 import { mainNav } from "../lib/navigation.js";
-import logo from "../assets/logo.jpeg";
+import logo from "../assets/logo-192.png";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -41,6 +41,8 @@ export function Header() {
             <img
               src={logo}
               alt="Dormi Guide Events"
+              width={192}
+              height={192}
               className="h-12 w-auto md:h-14"
             />
           </Link>
@@ -57,7 +59,7 @@ export function Header() {
                         "relative block rounded-md px-3 py-2 text-sm font-medium transition-colors",
                         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500",
                         isActive
-                          ? "text-pink-500"
+                          ? "text-purple-700"
                           : "text-charcoal hover:text-purple-700",
                       ].join(" ")
                     }
